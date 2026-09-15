@@ -44,7 +44,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           script: |
-            ./gradlew --no-daemon :app:connectedDebugAndroidTest
+            ./gradlew --no-daemon -Pandroid.injected.androidTest.leaveApksInstalledAfterRun=true :app:connectedDebugAndroidTest
             adb pull /sdcard/Android/data/com.perioperative.planner/files/verification app/build/device-verification
       - name: Upload verification reports
         if: always()

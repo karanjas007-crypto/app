@@ -38,7 +38,7 @@ object Sources {
         "mh" to Source("MHAUS", "Clinical resources", "https://www.mhaus.org/healthcare-professionals/"),
         "pbw" to Source("ARDS Network", "Adult predicted body weight equation", "https://www.ardsnet.org/files/ventilator_protocol_2008-07.pdf"),
         "regional" to Source("PROSPECT", "Procedure-specific analgesia", "https://esraeurope.org/prospect/"),
-        "local" to Source("Clinician-authored planning prompt", "Local protocol required", "")
+        "local" to Source("Planning prompt", "Local protocol required", "")
     )
     fun get(k: String) = all[k] ?: all.getValue("local")
 }
