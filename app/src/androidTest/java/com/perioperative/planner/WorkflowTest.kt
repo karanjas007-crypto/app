@@ -64,7 +64,7 @@ class WorkflowTest {
         assertEquals("PACU", saved.v("recovery.destination"))
         assertTrue(saved.actions.isNotEmpty())
         assertTrue(saved.actions.first().trigger.isNotBlank())
-        val storedBytes = File(context.filesDir, "cases-v1.enc").readBytes()
+        val storedBytes = File(context.noBackupFilesDir, "cases-v1.enc").readBytes()
         assertFalse(String(storedBytes, Charsets.UTF_8).contains(saved.v("label")))
 
         val report = Report.text(saved)

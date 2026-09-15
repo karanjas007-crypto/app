@@ -23,7 +23,7 @@ import javax.crypto.spec.GCMParameterSpec
 
 data class Book(val cases: List<Case>, val selected: String)
 class Storage(context: Context) {
-    private val disk = AtomicFile(File(context.filesDir,"cases-v1.enc"))
+    private val disk = AtomicFile(File(context.noBackupFilesDir,"cases-v1.enc"))
     private fun key(): SecretKey {
         val ks=KeyStore.getInstance("AndroidKeyStore").apply{load(null)}
         if(ks.containsAlias("perioperative-v1")) return ks.getKey("perioperative-v1",null) as SecretKey
