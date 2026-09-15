@@ -45,8 +45,8 @@ Software tests check implementation behavior, not clinical safety.
 
 ## Build in Android Studio
 
-1. Extract the complete project.
-2. Open the **PerioperativePlanner** folder containing settings.gradle.kts.
+1. Clone the repository and check out **codex/perioperative-planner**.
+2. Open its root folder containing settings.gradle.kts.
 3. Use JDK 17 and install Android SDK Platform 35.
 4. Sync Gradle, select the **app** run configuration, and run on Android 8.0+.
 
@@ -72,11 +72,14 @@ Compose BOM 2025.05.01; min SDK 26 and target/compile SDK 35.
 - MainActivity.kt / Screens.kt: native Android interface.
 - Report.kt: handover and multi-page PDF export.
 - EngineTest.kt: unknown states, boundaries, scope and revision tests.
+- WorkflowTest.kt: five-screen flow, encrypted save, recommendation provenance,
+  handover PDF and activity recreation on an Android emulator.
 
 ## Verification
 
 Run unit tests and lint/build before distributing an APK. The included
-GitHub Actions workflow performs those checks and uploads the APK and reports.
+GitHub Actions workflow performs those checks, runs the workflow test on Android 15,
+and uploads the APK, device screenshots and reports.
 A compiled APK is a development preview, not clinical validation.
 
 Gradle wrapper components retain their upstream Apache-2.0 licensing.

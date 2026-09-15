@@ -60,6 +60,10 @@ object Content {
                 "Specify monitoring and destination; continue existing prescribed PAP when appropriate. New settings require assessment.","sasm",
                 if(c.v("resp.pap").isBlank()) "PAP prescription and use" else "")
         if(c.yes("diabetes")) {
+            if((c.num("diabetes.a1c",3.0,25.0) ?: 0.0) > 8.0)
+                add("a1c-review","Diabetes","Review glycemic optimization","HbA1c >8%",
+                    "Review optimization opportunities alongside urgency and the planned operation. HbA1c alone does not cancel surgery.",
+                    "Agree the glucose and monitoring plan.","Coordinate follow-up and treatment review.","ada")
             add("diabetes","Diabetes","Make the glycemic plan","Diabetes selected",
                 "Review diabetes type, glucose, recent HbA1c and medication regimen. Elevated HbA1c prompts optimization review; it alone does not determine postponement.",
                 "Usual perioperative glucose target 100–180 mg/dL, individualized for the setting. Specify monitoring and hypoglycemia management. IV insulin requires a named validated local protocol.",

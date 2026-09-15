@@ -219,6 +219,8 @@ val recoveryFields=linkedMapOf("recovery.reason" to "Destination reasoning and e
     Section("Actions added to plan",c.actions.size.toString()+" actions"){
         if(c.actions.isEmpty())Text("Add recommendations from Assessment, or document your own plan above.")
         c.actions.forEach{a->Section(a.title,if(a.revision!=c.revision)"Findings changed — review needed"else"Based on current assessment",false){
+            Text("Trigger when added: "+a.trigger.ifBlank{"Not recorded"},style=MaterialTheme.typography.bodySmall)
+            if(a.missing.isNotBlank())Info("Missing when added: "+a.missing,true)
             OutlinedTextField(a.text,{vm.update(a.copy(text=it))},label={Text("Editable action")},modifier=Modifier.fillMaxWidth(),minLines=3)
             OutlinedTextField(a.owner,{vm.update(a.copy(owner=it))},label={Text("Owner")},modifier=Modifier.fillMaxWidth())
             OutlinedTextField(a.due,{vm.update(a.copy(due=it))},label={Text("Due / review time")},modifier=Modifier.fillMaxWidth())

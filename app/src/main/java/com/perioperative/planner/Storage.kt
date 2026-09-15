@@ -50,7 +50,8 @@ class Storage(context: Context) {
                 (0 until actions.length()).map { j ->
                     val a=actions.getJSONObject(j)
                     Action(a.getString("id"),a.getString("rule"),a.getString("title"),a.getString("text"),
-                        a.getString("source"),a.getInt("revision"),a.optString("owner"),a.optString("due"))
+                        a.getString("source"),a.getInt("revision"),a.optString("owner"),a.optString("due"),
+                        a.optString("trigger"),a.optString("missing"))
                 },o.getInt("revision"),o.optBoolean("reviewed",false))
         }
         require(cases.isNotEmpty())
@@ -61,7 +62,8 @@ class Storage(context: Context) {
         book.cases.forEach { c ->
             val actions=JSONArray()
             c.actions.forEach{a->actions.put(JSONObject().put("id",a.id).put("rule",a.rule).put("title",a.title)
-                .put("text",a.text).put("source",a.source).put("revision",a.revision).put("owner",a.owner).put("due",a.due))}
+                .put("text",a.text).put("source",a.source).put("revision",a.revision).put("owner",a.owner).put("due",a.due)
+                .put("trigger",a.trigger).put("missing",a.missing))}
             array.put(JSONObject().put("id",c.id).put("fields",JSONObject(c.fields))
                 .put("checks",JSONArray(c.checks.toList())).put("actions",actions).put("revision",c.revision).put("reviewed",c.reviewed))
         }
@@ -106,7 +108,7 @@ class PlannerVM(app: Application):AndroidViewModel(app) {
         cases=cases+n;selected=n.id;save()
     }
     fun check(key:String){replace(c.copy(checks=if(key in c.checks)c.checks-key else c.checks+key,reviewed=false))}
-    fun add(a:Advice){if(c.actions.none{it.rule==a.id})replace(c.copy(actions=c.actions+Action(rule=a.id,title=a.title,text=a.text,source=a.source,revision=c.revision),reviewed=false))}
+    fun add(a:Advice){if(c.actions.none{it.rule==a.id})replace(c.copy(actions=c.actions+Action(rule=a.id,title=a.title,text=a.text,source=a.source,revision=c.revision,trigger=a.trigger,missing=a.missing),reviewed=false))}
     fun update(a:Action){replace(c.copy(actions=c.actions.map{if(it.id==a.id)a else it},reviewed=false))}
     fun remove(id:String){replace(c.copy(actions=c.actions.filterNot{it.id==id},reviewed=false))}
     fun review(){replace(c.copy(reviewed=true))}

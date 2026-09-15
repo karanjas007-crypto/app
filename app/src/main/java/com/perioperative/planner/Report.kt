@@ -46,6 +46,8 @@ object Report {
         c.actions.forEach{a->
             appendLine("\n"+a.title+if(a.revision!=c.revision)" [FINDINGS CHANGED — REVIEW]"else"")
             appendLine(a.text);appendLine("Owner: "+a.owner.ifBlank{"Unassigned"}+"; due: "+a.due.ifBlank{"Not set"})
+            appendLine("Trigger when added: "+a.trigger.ifBlank{"Not recorded"})
+            appendLine("Missing when added: "+a.missing.ifBlank{"None listed; reassess current findings"})
             val source=Sources.get(a.source);appendLine("Source: "+source.name+", "+source.edition+" · "+source.url)
             appendLine("Content version: 15 Sep 2026; clinical review pending")
         }

@@ -4,6 +4,12 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class EngineTest {
+    @Test fun elevatedA1cPromptsReviewOnlyAboveThreshold(){
+        val c=Case(fields=mapOf("diabetes" to "Yes","diabetes.a1c" to "8.0"))
+        assertFalse(Content.advice(c).any{it.id=="a1c-review"})
+        assertTrue(Content.advice(c.set("diabetes.a1c","8.1")).any{it.id=="a1c-review"})
+        assertFalse(Content.advice(c.set("diabetes.a1c","")).any{it.id=="a1c-review"})
+    }
     private fun ac(extra:Map<String,String> = emptyMap())=Case(fields=mapOf(
         "anti.drug" to "Apixaban","anti.dose" to "2.5 mg twice daily","anti.indication" to "VTE prophylaxis",
         "anti.class" to "Low","anti.verified" to "Yes","anti.crcl" to "80","anti.other" to "No",

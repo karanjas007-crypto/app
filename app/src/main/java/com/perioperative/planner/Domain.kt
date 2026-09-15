@@ -7,7 +7,8 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 data class Action(val id: String = UUID.randomUUID().toString(), val rule: String, val title: String,
-    val text: String, val source: String, val revision: Int, val owner: String = "", val due: String = "")
+    val text: String, val source: String, val revision: Int, val owner: String = "", val due: String = "",
+    val trigger: String = "", val missing: String = "")
 data class Case(val id: String = UUID.randomUUID().toString(), val fields: Map<String, String> = emptyMap(),
     val checks: Set<String> = emptySet(), val actions: List<Action> = emptyList(),
     val revision: Int = 0, val reviewed: Boolean = false) {
