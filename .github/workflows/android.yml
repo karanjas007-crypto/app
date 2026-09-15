@@ -42,6 +42,7 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_6
+          enable-hw-keyboard: true
           disable-animations: true
           script: |
             ./gradlew --no-daemon -Pandroid.injected.androidTest.leaveApksInstalledAfterRun=true :app:connectedDebugAndroidTest

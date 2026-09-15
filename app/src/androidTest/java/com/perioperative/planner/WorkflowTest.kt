@@ -6,7 +6,8 @@ import android.os.ParcelFileDescriptor
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.Espresso.closeSoftKeyboard
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.*
@@ -19,6 +20,13 @@ import java.io.File
 class WorkflowTest {
     @get:Rule val ui = createAndroidComposeRule<MainActivity>()
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
+    private fun hideKeyboard() {
+        ui.runOnIdle {
+            WindowCompat.getInsetsController(ui.activity.window, ui.activity.window.decorView)
+                .hide(WindowInsetsCompat.Type.ime())
+        }
+        ui.waitForIdle()
+    }
     private fun capture(name: String) {
         ui.waitForIdle()
         val folder = File(context.getExternalFilesDir(null), "verification").apply { mkdirs() }
@@ -31,7 +39,7 @@ class WorkflowTest {
         ui.onNodeWithText("Add demo").performClick()
         ui.onNodeWithTag("label").performScrollTo().performTextClearance()
         ui.onNodeWithTag("label").performTextInput("Fictional workflow verification")
-        closeSoftKeyboard()
+        hideKeyboard()
         capture("01-case")
 
         ui.onNodeWithTag("nav_1").performClick()
@@ -42,7 +50,7 @@ class WorkflowTest {
         ui.onNodeWithTag("nav_2").performClick()
         capture("03-plan")
         ui.onNodeWithTag("plan.reason").performScrollTo().performTextInput("Fictional editable plan reasoning")
-        closeSoftKeyboard()
+        hideKeyboard()
         ui.onNodeWithTag("nav_3").performClick()
         ui.onNodeWithText("Operating-room checklist").assertIsDisplayed()
         capture("04-preparation")
