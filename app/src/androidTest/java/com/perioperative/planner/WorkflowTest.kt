@@ -34,7 +34,43 @@ class WorkflowTest {
             ui.onRoot().captureToImage().asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it)
         }
     }
+    @Test fun recommendationsRespondToInputs() {
+        ui.onNodeWithText("Example").performClick()
+        ui.onNodeWithText("Spinal anesthesia").assertExists()
+        ui.onNodeWithText("Epidural insertion").performScrollTo().assertIsDisplayed()
+        ui.onNodeWithText("Epidural catheter removal").performScrollTo().assertIsDisplayed()
+        ui.onNodeWithText("Restart medication").performScrollTo().assertIsDisplayed()
+        capture("06-neuraxial")
+        ui.onNodeWithTag("advisor_1").performClick()
+        ui.onNodeWithTag("advisor_toggle").performClick()
+        ui.onNodeWithText("Consider awake flexible-scope intubation; severe oral-access restriction").assertExists()
+        capture("07-airway")
+        ui.onNodeWithTag("advisor_2").performClick()
+        ui.onNodeWithTag("advisor_toggle").performClick()
+        ui.onNodeWithText("Defer extubation; correct the unmet readiness criteria").assertExists()
+        capture("08-extubation-hold")
+        ui.onNodeWithTag("advisor_toggle").performClick()
+        ui.onNodeWithTag("ext.tof").performScrollTo().performTextClearance()
+        ui.onNodeWithTag("ext.tof").performTextInput("0.95")
+        hideKeyboard()
+        ui.onNodeWithTag("advisor_toggle").performClick()
+        ui.onNodeWithText("Plan awake extubation with a defined reintubation strategy").assertExists()
+        capture("09-extubation-ready")
+        ui.onNodeWithTag("advisor_3").performClick()
+        ui.onNodeWithTag("advisor_toggle").performClick()
+        ui.onNodeWithText("Single-shot adductor-canal block plus periarticular local infiltration, with multimodal systemic analgesia").assertExists()
+        capture("10-analgesia")
+        ui.waitUntil(15_000) { ui.onAllNodesWithText("Saved on device").fetchSemanticsNodes().isNotEmpty() }
+        val book=Storage(context).read()
+        val saved=book.cases.first { it.id==book.selected }
+        val report=Report.text(saved)
+        assertTrue(report.contains("GENERATED RECOMMENDATIONS"))
+        assertTrue(report.contains("Restart medication"))
+        assertTrue(report.contains("Plan awake extubation with a defined reintubation strategy"))
+        assertEquals("0.95",saved.v("ext.tof"))
+    }
     @Test fun caseToHandoverAndEncryptedSave() {
+        ui.onNodeWithText("Full planner").performClick()
         ui.onNodeWithText("Cases").performClick()
         ui.onNodeWithText("Add demo").performClick()
         ui.onNodeWithTag("label").performScrollTo().performTextClearance()

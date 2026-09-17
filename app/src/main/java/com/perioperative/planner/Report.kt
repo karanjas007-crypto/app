@@ -32,6 +32,14 @@ object Report {
             "diabetes.a1c" to "HbA1c (%)","diabetes.meds" to "Diabetes treatment","medications" to "Medication list",
             "medicationPlan" to "Medication decisions","hb" to "Hemoglobin/FBC","labs" to "Other results")
         findings.forEach{(key,label)->appendLine("$label: "+c.display(key))}
+        appendLine("\nGENERATED RECOMMENDATIONS")
+        listOf(DecisionSupport.airway(c),DecisionSupport.extubation(c),DecisionSupport.analgesia(c)).forEach{d->
+            appendLine("\n"+d.title+": "+d.recommendation)
+            d.reasons.forEach{appendLine("Finding: $it")}
+            d.actions.forEach{appendLine("• $it")}
+            if(d.missing.isNotEmpty())appendLine("Complete / verify: "+d.missing.joinToString("; "))
+            d.sources.forEach{key->val s=Sources.get(key);appendLine("Source: ${s.name}, ${s.edition} · ${s.url}")}
+        }
         appendLine("\nINDIVIDUAL PLAN")
         appendLine("Anesthesia: "+c.display("plan.anesthesia"));appendLine("Airway: "+c.display("plan.airway"))
         planFields.forEach{(key,label)->appendLine("$label: "+c.display(key))}
@@ -49,7 +57,7 @@ object Report {
             appendLine("Trigger when added: "+a.trigger.ifBlank{"Not recorded"})
             appendLine("Missing when added: "+a.missing.ifBlank{"None listed; reassess current findings"})
             val source=Sources.get(a.source);appendLine("Source: "+source.name+", "+source.edition+" · "+source.url)
-            appendLine("Content version: 15 Sep 2026; clinical review pending")
+            appendLine("Content version: 17 Sep 2026; clinical review pending")
         }
         appendLine("\nSUGGESTIONS AWAITING A CLINICIAN DECISION")
         val pending=Content.advice(c).filter{r->c.actions.none{it.rule==r.id}}
@@ -57,10 +65,10 @@ object Report {
         if(pending.isEmpty())appendLine("None generated; missing inputs can prevent recommendations.")
         if(c.v("anti.drug").isNotBlank()){
             appendLine("\nANTITHROMBOTIC TIMELINE")
-            appendLine("Drug: "+c.display("anti.drug")+"; dose: "+c.display("anti.dose")+"; indication: "+c.display("anti.indication"))
+            appendLine("Drug: "+c.display("anti.drug")+"; regimen: "+(Anticoagulation.selected(c)?.label?:"Not selected"))
             appendLine("Last dose: "+c.display("anti.last")+"; CrCl (mL/min): "+c.display("anti.crcl"))
             val t=Engine.timeline(c)
-            t.steps.forEach{s->appendLine(s.title+": "+s.state+(s.earliest?.let{" — earliest reference "+Engine.stamp(it)}?:""))}
+            t.steps.forEach{s->appendLine(s.title+": "+s.state+(s.earliest?.let{" — earliest reference "+Engine.stamp(it)}?:""));appendLine(s.detail)}
             appendLine("Missing / review: "+t.missing.joinToString("; "))
             appendLine("Time criteria do not establish clinical suitability.")
         }

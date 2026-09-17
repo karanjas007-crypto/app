@@ -107,6 +107,31 @@ class PlannerVM(app: Application):AndroidViewModel(app) {
             "diabetes" to "Yes","osa" to "Yes","airway.opening" to "2","airway.mallampati" to "III","diabetes.a1c" to "8.6"))else Case()
         cases=cases+n;selected=n.id;save()
     }
+    fun newAdvisorExample(){
+        val last=java.time.Instant.now().truncatedTo(java.time.temporal.ChronoUnit.HOURS).minusSeconds(96*3600)
+        fun at(hours:Long)=last.plusSeconds(hours*3600).toString()
+        val n=Case(fields=mapOf(
+            "label" to "Fictional advisor example", "procedure" to "Knee replacement", "urgency" to "Elective",
+            "duration" to "120", "position" to "Supine", "age" to "68", "height" to "165", "weight" to "92",
+            "osa" to "Yes", "renal" to "No", "liver" to "No",
+            "airway.opening" to "2", "airway.mallampati" to "III", "airway.thyromental" to "5.5",
+            "airway.neck" to "Restricted", "airway.jaw" to "Limited", "airway.bite" to "III",
+            "airway.dentition" to "No loose teeth", "airway.previous" to "Yes", "airway.aspiration" to "No",
+            "airway.ventilation" to "Yes", "airway.apnea" to "Yes", "airway.rescue" to "No",
+            "airway.highPressure" to "No", "airway.lungIsolation" to "No", "airway.shared" to "No",
+            "anti.drug" to "Apixaban", "anti.regimen" to "apix_high", "anti.dose" to "5 mg twice daily for AF",
+            "anti.crcl" to "75", "anti.aki" to "No", "anti.other" to "No", "anti.bleeding" to "No",
+            "anti.last" to at(0), "anti.insertion" to at(72), "anti.catheter" to "Yes", "anti.exposed" to "No",
+            "anti.removal" to at(82), "anti.surgeryEnd" to at(74), "anti.surgicalRisk" to "High",
+            "anti.traumatic" to "No", "anti.hemostasis" to "Yes", "anti.thrombosis" to "Yes",
+            "ext.awake" to "Yes", "ext.ventilation" to "Yes", "ext.protection" to "Yes", "ext.stable" to "Yes",
+            "ext.nmb" to "Yes", "ext.tof" to "0.82", "ext.difficult" to "Yes", "ext.edema" to "No", "ext.support" to "No",
+            "pain.opioid" to "Daily full agonist", "pain.regimen" to "Oxycodone 10 mg orally every 12 h for 3 months",
+            "pain.last" to "Usual morning dose in this fictional scenario", "pain.allergies" to "Yes",
+            "pain.paracetamolContra" to "No", "pain.nsaidContra" to "No"
+        ))
+        cases=cases+n;selected=n.id;save()
+    }
     fun check(key:String){replace(c.copy(checks=if(key in c.checks)c.checks-key else c.checks+key,reviewed=false))}
     fun add(a:Advice){if(c.actions.none{it.rule==a.id})replace(c.copy(actions=c.actions+Action(rule=a.id,title=a.title,text=a.text,source=a.source,revision=c.revision,trigger=a.trigger,missing=a.missing),reviewed=false))}
     fun update(a:Action){replace(c.copy(actions=c.actions.map{if(it.id==a.id)a else it},reviewed=false))}

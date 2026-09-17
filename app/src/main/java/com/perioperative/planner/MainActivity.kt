@@ -51,6 +51,7 @@ class MainActivity:ComponentActivity(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(vm:PlannerVM=viewModel()){
+    var advisor by rememberSaveable{mutableStateOf(true)}
     var tab by rememberSaveable{mutableIntStateOf(0)}
     var caseList by rememberSaveable{mutableStateOf(false)}
     var preview by rememberSaveable{mutableStateOf(false)}
@@ -73,6 +74,7 @@ fun App(vm:PlannerVM=viewModel()){
             Text(vm.status);Button(onClick=vm::reload){Text("Retry opening cases")}
         };return
     }
+    if(advisor){AdvisorHome(vm){advisor=false};return}
     val c=vm.c
     val names=listOf("Case","Assessment","Anesthesia plan","OR preparation","Recovery")
     val short=listOf("Case","Assess","Plan","OR prep","Recovery")
@@ -81,6 +83,7 @@ fun App(vm:PlannerVM=viewModel()){
         Text("PERIOPERATIVE PLANNER",fontSize=10.sp,color=teal,letterSpacing=1.sp)
         Text(names[tab],style=MaterialTheme.typography.titleLarge)
     }},actions={
+        TextButton(onClick={advisor=true}){Text("Advisor")}
         TextButton(onClick={caseList=true}){Text("Cases")}
         IconButton(onClick=vm::save){Icon(Icons.Outlined.Save,"Save case")}
     })},bottomBar={NavigationBar{
@@ -149,7 +152,7 @@ fun Choice(vm:PlannerVM,k:String,label:String,items:List<String>){
         FlowRow(horizontalArrangement=Arrangement.spacedBy(6.dp)){
             (listOf("Unknown")+items).forEach{labelValue->
                 val value=if(labelValue=="Unknown")"" else labelValue
-                FilterChip(selected=vm.c.v(k)==value,onClick={vm.set(k,value)},label={Text(labelValue)})
+                FilterChip(selected=vm.c.v(k)==value,onClick={vm.set(k,value)},label={Text(labelValue)},modifier=Modifier.testTag("$k:$value"))
             }
         }
     }
@@ -163,7 +166,7 @@ fun Choice(vm:PlannerVM,k:String,label:String,items:List<String>){
 @Composable fun SourceView(id:String){
     val source=Sources.get(id);val context=LocalContext.current
     Text(source.name+" · "+source.edition,fontSize=11.sp,color=teal)
-    Text("Content version: 15 Sep 2026 · Clinical review pending",fontSize=10.sp,color=Color.Gray)
+    Text("Content version: 17 Sep 2026 · Clinical review pending",fontSize=10.sp,color=Color.Gray)
     if(source.url.isNotBlank())TextButton(onClick={
         try{context.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(source.url)))}catch(_:Exception){Toast.makeText(context,"No browser available",Toast.LENGTH_SHORT).show()}
     }){Text("View source")}
@@ -181,7 +184,7 @@ fun Choice(vm:PlannerVM,k:String,label:String,items:List<String>){
 }
 @Composable fun TimeField(vm:PlannerVM,k:String,label:String){
     val ctx=LocalContext.current;val s=vm.c.v(k)
-    OutlinedTextField(s,{vm.set(k,it)},label={Text(label)},modifier=Modifier.fillMaxWidth(),singleLine=true,
+    OutlinedTextField(s,{vm.set(k,it)},label={Text(label)},modifier=Modifier.fillMaxWidth().testTag(k),singleLine=true,
         isError=s.isNotBlank()&&Engine.time(s)==null,placeholder={Text("2026-09-15T08:00-07:00",fontSize=11.sp)},
         supportingText={Text("Date, time and UTC offset required")})
     TextButton(onClick={

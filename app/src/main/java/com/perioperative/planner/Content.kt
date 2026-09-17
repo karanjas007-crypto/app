@@ -5,7 +5,7 @@ object Content {
         "ph" to "Pulmonary hypertension", "renal" to "Renal disease", "liver" to "Liver disease",
         "mh" to "MH susceptibility", "opioid" to "Chronic opioid use", "frailty" to "Frailty", "anemia" to "Anemia",
         "nutrition" to "Nutrition concerns", "delirium" to "Delirium vulnerability", "ponv" to "PONV risk")
-    val procedures = listOf("Knee replacement", "Hip replacement", "CABG", "Liver transplantation", "Whipple", "TURP", "Cesarean delivery", "Trauma", "Other")
+    val procedures = listOf("Knee replacement", "Hip replacement", "CABG", "Liver transplantation", "Whipple", "TURP", "Cesarean delivery", "Trauma", "Head / neck / airway surgery", "Short peripheral / superficial surgery", "Other")
     val commonPrep = listOf("Confirm procedure, side, consent and allergies", "Review airway equipment and assistance",
         "Confirm access, monitoring and blood plan", "Review medicines and antithrombotic timing", "Review investigations",
         "Agree recovery destination and handover")

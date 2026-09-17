@@ -138,46 +138,8 @@ import androidx.compose.ui.unit.dp
     }
 }
 @Composable fun AnticoagulantScreen(vm:PlannerVM){
-    val c=vm.c
-    Choice(vm,"anti.drug","Medication",listOf("Apixaban","Rivaroxaban","Dabigatran","Edoxaban","Enoxaparin","UFH","Warfarin","Clopidogrel","Ticagrelor","Aspirin","Other"))
-    Field(vm,"anti.dose","Actual dose, unit and frequency")
-    Field(vm,"anti.indication","Indication and duration of treatment")
-    Field(vm,"anti.crcl","Creatinine clearance (mL/min; not indexed eGFR)",min=1.0,max=200.0)
-    Field(vm,"anti.labs","Relevant laboratory values, units and collection times",true)
-    Tri(vm,"anti.other","Other antithrombotics / interacting treatment")
-    Tri(vm,"anti.bleeding","Active bleeding / other hemostatic concern")
-    Tri(vm,"anti.thrombosis","Thrombosis and interruption risk reviewed")
-    Field(vm,"anti.thrombosisPlan","Thrombosis/interrupting-treatment plan and clinician",true)
-    TimeField(vm,"anti.last","Last medication administration")
-    if(c.v("anti.drug")=="Apixaban"){
-        Choice(vm,"anti.class","ASRA dose class",listOf("Low","High"))
-        Tri(vm,"anti.verified","Dose class verified against ASRA indication/dose/renal table")
-        Info("Limited apixaban reference branches: CrCl ≥30 mL/min and no other antithrombotics or bleeding concern. Dose class is not inferred from milligrams alone. No assay-based exception or reversal strategy is implemented.",true)
-    }else{
-        Info("For this drug, enter intervals verified from its guideline/protocol. The app provides interval arithmetic.",true)
-        Field(vm,"anti.source","Source, edition, section and review date",true)
-        Field(vm,"anti.hold","Verified last-dose to insertion interval (whole h)",min=0.0,max=720.0)
-        Field(vm,"anti.removeHours","Verified last-dose to catheter removal interval (whole h)",min=0.0,max=720.0)
-        Field(vm,"anti.after","Verified event-to-subsequent-dose interval (whole h)",min=0.0,max=720.0)
-        Tri(vm,"anti.manualVerified","Intervals and applicability verified by clinician")
-    }
-    TimeField(vm,"anti.insertion","Actual / proposed insertion")
-    Tri(vm,"anti.catheter","Catheter present / planned")
-    if(c.yes("anti.catheter")){
-        Tri(vm,"anti.exposed","Medication given while catheter present")
-        TimeField(vm,"anti.removal","Actual / proposed removal")
-    }
-    Tri(vm,"anti.traumatic","Traumatic puncture")
-    Tri(vm,"anti.hemostasis","Adequate hemostasis confirmed for restart")
-    TimeField(vm,"anti.surgical","Earliest restart allowed by surgical/bleeding plan")
-    TimeField(vm,"anti.restart","Proposed subsequent administration")
-    val t=Engine.timeline(c)
-    t.steps.forEach{s->Section(s.title,s.state){
-        s.earliest?.let{Text("Earliest reference: "+Engine.stamp(it))}
-        if(s.detail.isNotBlank())Text(s.detail,style=MaterialTheme.typography.bodySmall)
-    }}
-    if(t.missing.isNotEmpty())Info("Missing / review required:\n"+t.missing.joinToString("\n"){ "• $it" },true)
-    SourceView(t.source)
+    NeuraxialInputs(vm)
+    NeuraxialResults(vm.c)
 }
 val planFields=linkedMapOf("plan.reason" to "Why this approach fits the patient and operation",
     "plan.oxygenation" to "Preparation, positioning and oxygenation","plan.rescue" to "Rescue, attempt limits and emergency access",
@@ -191,6 +153,9 @@ val recoveryFields=linkedMapOf("recovery.reason" to "Destination reasoning and e
     "recovery.tasks" to "Outstanding tasks and handover recipient")
 @Composable fun PlanScreen(vm:PlannerVM,preview:()->Unit){
     val c=vm.c;Risk(c)
+    Section("Generated recommendations", "Based on current findings", false){
+        DecisionCard(DecisionSupport.airway(c));DecisionCard(DecisionSupport.extubation(c));DecisionCard(DecisionSupport.analgesia(c))
+    }
     Section("Individual perioperative plan"){
         Choice(vm,"plan.anesthesia","Anesthesia",listOf("General","Spinal","Epidural","Combined spinal–epidural","Peripheral regional","Combined technique","Other"))
         Choice(vm,"plan.airway","Primary airway approach",listOf("Awake flexible scope","Awake video-assisted","Video laryngoscopy","Direct laryngoscopy","Supraglottic airway","Regional with airway contingency","Other"))
