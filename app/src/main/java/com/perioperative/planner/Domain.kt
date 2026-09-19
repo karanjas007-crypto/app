@@ -41,6 +41,7 @@ object Sources {
         "erasPD" to Source("ERAS pancreatoduodenectomy", "2019 recommendations, published 2020", "https://doi.org/10.1007/s00268-020-05462-w"),
         "opioidConsensus" to Source("Faculty of Pain Medicine: Surgery and opioids", "2021", "https://www.cpoc.org.uk/sites/cpoc/files/documents/2021-03/surgery-and-opioids-2021.pdf"),
         "methadone" to Source("UKCPA perioperative methadone", "Handbook; accessed 17 Sep 2026", "https://periop-handbook.ukclinicalpharmacy.org/drug/methadone-2/"),
+        "naltrexone" to Source("Vivitrol (depot naltrexone) prescribing information", "Jan 2026; pain management section 5.6", "https://labeling.alkermes.com/uspi_vivitrol.pdf"),
         "buprenorphine" to Source("Multisociety buprenorphine recommendations", "2021", "https://rapm.bmj.com/content/46/10/840"),
         "sasm" to Source("SASM OSA assessment", "2016", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4956681/"),
         "stop" to Source("STOP-Bang screening", "Classic eight factors", "https://pubmed.ncbi.nlm.nih.gov/26378880/"),

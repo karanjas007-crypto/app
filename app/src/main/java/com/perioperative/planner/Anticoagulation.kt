@@ -22,7 +22,7 @@ object Anticoagulation {
         Regimen("edox_high","Edoxaban","AF / VTE treatment · 60 mg or dose-reduced 30 mg daily",72,24,24,"DOAC"),
         Regimen("enox_daily","Enoxaparin","40 mg subcutaneous once daily",12,12,4,"LMWH",true),
         Regimen("enox_bid","Enoxaparin","30 mg subcutaneous every 12 hours",12,12,4,"LMWH",false,"First postoperative dose: following day as well as ≥12 h after insertion."),
-        Regimen("enox_high","Enoxaparin","1 mg/kg every 12 hours or 1.5 mg/kg daily",24,24,4,"LMWH"),
+        Regimen("enox_high","Enoxaparin","1 mg/kg every 12 hours or 1.5 mg/kg daily",24,24,4,"LMWH",false,"Time-only calculation is limited to CrCl ≥50 mL/min. Review residual activity in elderly or morbidly obese patients; 24 h may not ensure drug clearance."),
         Regimen("ufh_low","UFH","5,000 units subcutaneous twice or three times daily",6,0,0,"UFH",true,"ASRA range 4–6 h; calculator uses 6 h."),
         Regimen("ufh_mid","UFH","7,500–10,000 units subcutaneous twice daily; ≤20,000 units/day",12,0,0,"UFH",false,"Normal coagulation required. Postoperative dosing needs an individual plan."),
         Regimen("ufh_high","UFH",">10,000 units per subcutaneous dose or >20,000 units/day",24,0,0,"UFH",false,"Normal coagulation required. Postoperative dosing needs an individual plan."),
@@ -60,7 +60,7 @@ object Anticoagulation {
         if(r.family in listOf("DOAC","LMWH")){
             need(crcl!=null,"Creatinine clearance in mL/min (not indexed eGFR)")
             need(c.no("anti.aki"),"Exclude acute / unstable renal impairment")
-            val floor=if(r.id=="riva_low")15.0 else 30.0
+            val floor=when(r.id){"riva_low"->15.0;"enox_high"->50.0;else->30.0}
             need(crcl!=null && crcl>=floor,"Renal function outside implemented time-only scope; specialist / assay review needed")
         }
         if(r.family in listOf("UFH","LMWH")){

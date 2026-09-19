@@ -39,6 +39,8 @@ Software tests check implementation behavior, not clinical safety.
   renal status, other antithrombotics, bleeding concerns, current INR and heparin
   monitoring are applied when relevant. Unsupported combinations, severe renal
   impairment and unimplemented catheter exposures do not receive guessed times.
+  The high-dose enoxaparin time-only path is restricted to CrCl ≥50 mL/min;
+  renal dose adjustment / assay alternatives require individual review.
 - Restart uses the latest applicable needle, catheter-removal and surgery-end
   interval. It requires hemostasis, puncture status, thrombosis planning and
   consistent event order. Conservative upper ends of guideline ranges are named.

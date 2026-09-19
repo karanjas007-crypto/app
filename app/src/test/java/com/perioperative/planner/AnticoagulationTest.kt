@@ -42,6 +42,8 @@ class AnticoagulationTest {
         assertEquals(at("2026-09-04T08:00Z"),evaluate(patient("dabi_high",mapOf("anti.crcl" to "50"))).steps[0].earliest)
         assertEquals(at("2026-09-02T14:00Z"),evaluate(patient("riva_low",mapOf("anti.crcl" to "29"))).steps[0].earliest)
         assertNull(evaluate(patient("riva_low",mapOf("anti.crcl" to "14"))).steps[0].earliest)
+        assertNull(evaluate(patient("enox_high",mapOf("anti.crcl" to "49"))).steps[0].earliest)
+        assertNotNull(evaluate(patient("enox_high",mapOf("anti.crcl" to "50"))).steps[0].earliest)
         for(e in listOf("anti.crcl" to "29","anti.crcl" to "NaN","anti.crcl" to "","anti.aki" to "Yes","anti.other" to "","anti.other" to "Yes","anti.bleeding" to "Yes","age" to "12"))
             assertTrue(e.toString(),evaluate(patient(extra=mapOf(e))).steps.all{it.earliest==null})
     }

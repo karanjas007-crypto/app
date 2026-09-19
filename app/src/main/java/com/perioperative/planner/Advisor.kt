@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
                 Text(if(results)"Recommendations from your inputs"else"${labels[module]} · patient inputs",style=MaterialTheme.typography.headlineSmall)
                 Text("Adult clinician decision support · development preview",style=MaterialTheme.typography.labelLarge,color=teal)
                 if(vm.c.v("label").isNotBlank())Text(vm.c.v("label"),style=MaterialTheme.typography.bodySmall)
+                if(!results)TextButton(onClick={vm.newCase();results=false}){Text("New assessment")}
                 if(results){
                     when(module){
                         0->NeuraxialResults(vm.c)
